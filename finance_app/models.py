@@ -1,6 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import User
 from django.contrib.auth import get_user_model
+# from django.utils.translation import gettext_lazy as _
 
 User = get_user_model()
 
@@ -83,3 +84,24 @@ class SMSCommand(models.Model):
     command = models.CharField(max_length=20)
     timestamp = models.DateTimeField(auto_now_add=True)
     status = models.CharField(max_length=20)
+
+
+
+class Savings(models.Model):
+    user_profile = models.ForeignKey('UserProfile', on_delete=models.CASCADE)
+    name = models.CharField(max_length=100)
+    balance = models.DecimalField(max_digits=10, decimal_places=2)
+    goal = models.DecimalField(max_digits=10, decimal_places=2, null=True, blank=True)
+
+    def __str__(self):
+        return self.name
+
+    def save(self, *args, **kwargs):
+        # Calculate savings progress and save
+
+        if self.goal:
+            self.progress = (self.balance / self.goal) * 100
+        else:
+            self.progress = 0
+
+        super().save(*args, **kwargs)

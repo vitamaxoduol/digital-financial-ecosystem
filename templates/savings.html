@@ -1,0 +1,42 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<h1 class="mt-5">Savings</h1>
+
+<form method="post" class="mt-3">
+    {% csrf_token %}
+    {{ savings_form.as_p }}
+    <button type="submit" class="btn btn-primary">Create Savings</button>
+</form>
+
+<table class="table mt-3">
+    <thead>
+        <tr>
+            <th>Name</th>
+            <th>Balance</th>
+            <th>Goal</th>
+            <th>Progress</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for saving in savings %}
+        <tr>
+            <td><a href="{% url 'savings_detail' saving.id %}">{{ saving.name }}</a></td>
+            <td>{{ saving.balance }}</td>
+            <td>{% if saving.goal %}{{ saving.goal }}{% else %}-{% endif %}</td>
+            <td>{% if saving.goal %}{{ saving.progress }}%{% else %}-{% endif %}</td>
+        </tr>
+        {% empty %}
+        <tr>
+            <td colspan="4" class="text-center">No savings found.</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+<a href="{% url 'new_savings' %}" class="btn btn-primary">New Savings</a>
+
+{% endblock %}
+
+{% block extra_js %}{% endblock %}

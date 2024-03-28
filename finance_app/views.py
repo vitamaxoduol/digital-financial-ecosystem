@@ -1,13 +1,18 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect
+from django.contrib.auth.decorators import login_required
 from .models import UserProfile
 from django.db.models import Sum
 from django.contrib.auth.mixins import LoginRequiredMixin
-from django.views.generic import CreateView
+from django.views.generic import CreateView, View
 from django.views.generic import ListView
 from django.urls import reverse_lazy
 from .models import Account
 from .models import Transaction
 from django.db.models import Q
+from .forms import SavingsForm
+from .models import Savings
+
+
 def user_account(request):
     user = request.user
 
@@ -31,7 +36,31 @@ def user_account(request):
     })
 
 
+@login_required
+def savings(request):
+    context = {
+        'savings': Savings.objects.filter(user_profile__user=request.user),
+    }
 
+    if request.method == 'POST':
+        # Handle saving creation or modification
+
+        # Create a new savings form with the POST data
+        savings_form = SavingsForm(request.POST, instance=Savings())
+
+        if savings_form.is_valid():
+            # Save the new savings
+            new_savings = savings_form.save(commit=False)
+            new_savings.user_profile = request.user.userprofile
+            new_savings.save()
+
+            # Redirect to the savings list page
+            return redirect('savings')
+
+        # If the form is not valid, render the savings list page with the form errors
+        context['savings_form'] = savings_form
+
+    return render(request, 'finance_app/savings.html', context)
 
 class AccountCreateView(LoginRequiredMixin, CreateView):
     model = Account
@@ -69,7 +98,7 @@ class TransactionListView(LoginRequiredMixin, ListView):
 class TransactionHistoryListView(LoginRequiredMixin, ListView):
     model = Transaction
     context_object_name = 'transactions'
-    template_name = 'finance_app/transaction_history.html'
+    template_name = 'transaction_history.html'
     paginate_by = 10  # Number of transactions per page
 
     def get_queryset(self):
@@ -106,5 +135,3 @@ class TransactionHistoryListView(LoginRequiredMixin, ListView):
         context['transaction_type'] = self.request.GET.get('transaction_type')
 
         return context
-
-
