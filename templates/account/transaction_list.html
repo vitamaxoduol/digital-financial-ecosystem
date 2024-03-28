@@ -1,0 +1,14 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<h1 class="mt-5">Account Activity</h1>
+
+{% if account_number %}
+    <p>Account Number: {{ account_number }}</p>
+{% endif %}
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>Transaction Type</th

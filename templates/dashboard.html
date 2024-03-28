@@ -1,0 +1,68 @@
+{% load static %}
+
+{% extends 'base.html' %}
+
+{% block content %}
+
+<div class="container">
+    <h1 class="mt-5">Dashboard</h1>
+
+    <div class="row">
+        <div class="col-md-6">
+            <div class="card mb-4">
+                <div class="card-header">
+                    <h5 class="my-0">Accounts</h5>
+                </div>
+                <ul class="list-group list-group-flush">
+                    {% for account in accounts %}
+                        <li class="list-group-item">{{ account.account_number }} - {{ account.balance }} {{ account.currency }}</li>
+                    {% endfor %}
+                </ul>
+            </div>
+        </div>
+
+        <div class="col-md-6">
+            <div class="card mb-4">
+                <div class="card-header">
+                    <h5 class="my-0">Recent Transactions</h5>
+                </div>
+                <ul class="list-group list-group-flush">
+                    {% for transaction in transactions %}
+                        <li class="list-group-item">{{ transaction.transaction_type }} {{ transaction.amount }} {{ transaction.account_number }}</li>
+                    {% endfor %}
+                </ul>
+            </div>
+        </div>
+
+        <div class="col-md-6">
+            <div class="card mb-4">
+                <div class="card-header">
+                    <h5 class="my-0">Savings</h5>
+                </div>
+                <ul class="list-group list-group-flush">
+                    {% for saving in savings %}
+                        <li class="list-group-item">{{ saving.account_number }} - {{ saving.balance }} {{ saving.interest_rate }}% - {{ saving.maturity_date }}</li>
+                    {% endfor %}
+                </ul>
+            </div>
+        </div>
+
+        <div class="col-md-6">
+            <div class="card mb-4">
+                <div class="card-header">
+                    <h5 class="my-0">Loans</h5>
+                </div>
+                <ul class="list-group list-group-flush">
+                    {% for loan in loans %}
+                        <li class="list-group-item">{{ loan.account_number }} - {{ loan.balance }} {{ loan.interest_rate }}% - {{ loan.loan_type }} - {{ loan.repayment_schedule }}</li>
+                    {% endfor %}
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <h2 class="mt-5">Customize Dashboard</h2>
+    <!-- Add code for customizing the dashboard -->
+</div>
+
+{% endblock %}
